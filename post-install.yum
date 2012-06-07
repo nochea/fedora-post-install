@@ -1,0 +1,78 @@
+# 
+# Script pour interpreteur Shell yum
+# Launch this script with yum shell post-install.yum
+# Author Arnaud Mombrial - arnaud@nochea.net
+# Date 2011.11.29
+# Mainly inspired by yum article on Muffin3
+#
+ 
+# Some repo files are grabbed before this .yum script is launched (chromium && VirtualBox)
+# So the present script is sourced by post-install.sh
+
+# Tells yum not to ask for confirmation during installation process
+# assumeyes 0 = do prompt
+# assumeyes 1 = do not prompt
+config assumeyes 0
+
+# Meta Data Cache
+makecache
+
+# Update System Packages
+update
+
+#
+# Multimedia
+#
+# First free and non-free rpmfusion repo
+install --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm
+install --nogpgcheck http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm
+makecache
+update
+
+# Then Multimedia Packages.  
+install amarok xine-lib-extras-freeworld audacious audacious-plugins-freeworld-{aac,alac,mms,mp3,tta,wma} 
+install vlc mozilla-vlc lame lame-libs lame-mp3x k3b-extras-freeworld gstreamer-ffmpeg gstreamer-plugins-bad 
+install gstreamer-plugins-ugly
+install multimedia-menus
+install nted
+
+# Music Production Stack
+install qtractor audacious-plugins-jack jack-audio-connection-kit jack-rack jamin qjackctl vlc-plugin-jack
+
+# Printing
+install hplip-gui
+
+# kdesdk for kate (mainly)
+install kdesdk
+
+# Development MetaPackage for Virtualbox
+# Repo file is added in post-install.sh 
+# We use non-free VirtualBox, as usb support is Professionnaly "mandatory"
+groupinstall "Development Tools"
+install kernel-PAE-devel
+install kernel-devel dkms
+install VirtualBox-4.1
+# TODO system-config-users should be launch too
+
+# Webcam Utility
+install cheese
+
+# Adobe repo needed for : 
+# flash (yes I know it's proprietary ugly)
+# Some pdf files can't unfortunately be viewed correctly with gwenview, so we install adobe reader too
+# TODO Check computer architecture (i.e x86_64 or i686)
+# for x86_64 repo : 
+# install --nogpgcheck http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+# for i686 repo is : 
+install --nogpgcheck http://linuxdownload.adobe.com/adobe-release/adobe-release-i386-1.0-1.noarch.rpm
+# Then we install :
+install flash-plugin nspluginwrapper AdobeReader_fra
+
+# Network utilities
+install iftop nmap lynx ipref
+
+# System utilities
+install htop zsh unrar
+
+# Web Security Scanner
+install nikto
